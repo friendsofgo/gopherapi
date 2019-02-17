@@ -1,0 +1,7 @@
+github.com/aperezg/monster v0.0.0-20190201085025-648ece19f831 h1:zcVrTQ22nmJ1+0sp9Lc7OuAMkNqqbEy/3OKXiWB2ods=
+github.com/aperezg/monster v0.0.0-20190201085025-648ece19f831/go.mod h1:59SPFI3k23yeORvJqB1py+ZSdAgQKVaPAMZ0ZUWvZyo=
+github.com/google/jsonapi v0.0.0-20181016150055-d0428f63eb51/go.mod h1:XSx4m2SziAqk9DXY9nz659easTq4q6TyrpYd9tHSm0g=
+github.com/gorilla/mux v1.7.0 h1:tOSd0UKHQd6urX6ApfOn4XdBMY6Sh1MfxV3kmaazO+U=
+github.com/gorilla/mux v1.7.0/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
+github.com/oklog/ulid v1.3.1 h1:EGfNDEx6MqHz8B3uNV6QAib1UR2Lm97sHi3ocA6ESJ4=
+github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
