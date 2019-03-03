@@ -14,16 +14,20 @@ type api struct {
 	repository gopher.GopherRepository
 }
 
+// Server representation of gopher server
 type Server interface {
 	Router() http.Handler
+	FetchGophers(w http.ResponseWriter, r *http.Request)
+	FetchGopher(w http.ResponseWriter, r *http.Request)
 }
 
+// New initialize the server
 func New(repo gopher.GopherRepository) Server {
 	a := &api{repository: repo}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/gophers", a.fetchGophers).Methods(http.MethodGet)
-	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.fetchGopher).Methods(http.MethodGet)
+	r.HandleFunc("/gophers", a.FetchGophers).Methods(http.MethodGet)
+	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.FetchGopher).Methods(http.MethodGet)
 
 	a.router = r
 	return a
@@ -33,14 +37,16 @@ func (a *api) Router() http.Handler {
 	return a.router
 }
 
-func (a *api) fetchGophers(w http.ResponseWriter, r *http.Request) {
+// FetchGophers return a list of all gophers
+func (a *api) FetchGophers(w http.ResponseWriter, r *http.Request) {
 	gophers, _ := a.repository.FetchGophers()
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(gophers)
 }
 
-func (a *api) fetchGopher(w http.ResponseWriter, r *http.Request) {
+// FetchGopher return a gopher by ID
+func (a *api) FetchGopher(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gopher, err := a.repository.FetchGopherByID(vars["ID"])
 	w.Header().Set("Content-Type", "application/json")
