@@ -6,7 +6,7 @@ The Gopher API, is a simple CRUD API for formative purpose, we're building it wh
 **Install**
 
 ```sh
-$ go get -u github.com/friendsofgo/gopherapi/cmd/gopherapi
+$ GO111MODULE=auto go get -u github.com/friendsofgo/gopherapi/cmd/gopherapi
 ```
 
 **Usage**
@@ -36,4 +36,3 @@ If you think that you can improve with new endpoints, and functionallities the A
 
 ## License
 MIT License, see [LICENSE](https://github.com/friendsofgo/gopherapi/blob/master/LICENSE)
-
