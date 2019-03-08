@@ -6,12 +6,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/friendsofgo/gopher-api/pkg/storage/inmem"
+	"github.com/friendsofgo/gopherapi/pkg/storage/inmem"
 
-	sample "github.com/friendsofgo/gopher-api/cmd/sample-data"
-	gopher "github.com/friendsofgo/gopher-api/pkg"
+	sample "github.com/friendsofgo/gopherapi/cmd/sample-data"
+	gopher "github.com/friendsofgo/gopherapi/pkg"
 
-	"github.com/friendsofgo/gopher-api/pkg/server"
+	"github.com/friendsofgo/gopherapi/pkg/server"
 )
 
 func main() {

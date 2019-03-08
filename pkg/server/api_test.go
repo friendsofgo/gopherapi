@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	sample "github.com/friendsofgo/gopher-api/cmd/sample-data"
-	gopher "github.com/friendsofgo/gopher-api/pkg"
-	"github.com/friendsofgo/gopher-api/pkg/storage/inmem"
+	sample "github.com/friendsofgo/gopherapi/cmd/sample-data"
+	gopher "github.com/friendsofgo/gopherapi/pkg"
+	"github.com/friendsofgo/gopherapi/pkg/storage/inmem"
 )
 
 func TestFetchGophers(t *testing.T) {

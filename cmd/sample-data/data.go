@@ -1,7 +1,7 @@
 package sample
 
 import (
-	gopher "github.com/friendsofgo/gopher-api/pkg"
+	gopher "github.com/friendsofgo/gopherapi/pkg"
 )
 
 var Gophers = map[string]*gopher.Gopher{
