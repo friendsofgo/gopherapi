@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	gopher "github.com/friendsofgo/gopher-api/pkg"
+	gopher "github.com/friendsofgo/gopherapi/pkg"
 )
 
 type gopherRepository struct {

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	gopher "github.com/friendsofgo/gopher-api/pkg"
+	gopher "github.com/friendsofgo/gopherapi/pkg"
 
 	"github.com/gorilla/mux"
 )
