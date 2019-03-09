@@ -45,7 +45,7 @@ func TestFetchGophers(t *testing.T) {
 	expected := len(sample.Gophers)
 
 	if len(got) != expected {
-		t.Errorf("expected %d gophers, got: %d gopher", sample.Gophers, got)
+		t.Errorf("expected %v gophers, got: %v gopher", sample.Gophers, got)
 	}
 }
 

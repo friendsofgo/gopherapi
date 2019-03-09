@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - run: go test -v -race ./...
-      - run: go build -race cmd/{{REPO_NAME}}/main.go
+      - run: go build -race cmd/gopherapi/main.go
   build-go_latest:
     docker:
       - image: circleci/golang:latest
@@ -15,7 +15,7 @@ jobs:
     steps:
       - checkout
       - run: go test -v -race ./...
-      - run: go build -race cmd/{{REPO_NAME}}/main.go
+      - run: go build -race cmd/gopherapi/main.go
 workflows:
   version: 2
   build_and_test:
