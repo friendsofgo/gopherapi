@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build-go1.11.4:
+    docker:
+      - image: circleci/golang:1.11.4
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - run: go test -v -race ./...
+      - run: go build -race cmd/{{REPO_NAME}}/main.go
+  build-go_latest:
+    docker:
+      - image: circleci/golang:latest
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - run: go test -v -race ./...
+      - run: go build -race cmd/{{REPO_NAME}}/main.go
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build-go1.11.4
+      - build-go_latest
