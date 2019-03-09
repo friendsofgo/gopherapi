@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/friendsofgo/gopherapi.svg?style=svg)](https://circleci.com/gh/friendsofgo/gopherapi)
+
 # Gopher API
 The Gopher API, is a simple CRUD API for formative purpose, we're building it while writing the posts of the [blog](https://blog.friendsofgo.tech).
 
