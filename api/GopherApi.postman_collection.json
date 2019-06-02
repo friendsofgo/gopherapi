@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "358a0a2e-a86c-47db-926f-e4ebcdc0587d",
+		"name": "GopherApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fetch All Gophers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/gophers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gophers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Gopher by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/gophers/01D3XZ7CN92AKS9HAPSZ4D5DP9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gophers",
+						"01D3XZ7CN92AKS9HAPSZ4D5DP9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Gopher",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ID\": \"01DCBP0R0MSNZY975ZQF1DCQCH\",\n        \"name\": \"Eustaqio\",\n        \"image\": \"https://storage.googleapis.com/gopherizeme.appspot.com/gophers/f73f25d73c06cc81c482821391a85c4b7dd34ba5.png\",\n        \"age\": 99\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/gophers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gophers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modify Gopher",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"name\": \"Eustaqio\",\n        \"image\": \"https://storage.googleapis.com/gopherizeme.appspot.com/gophers/f73f25d73c06cc81c482821391a85c4b7dd34ba5.png\",\n        \"age\": 99\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/gophers/01D3XZ89NFJZ9QT2DHVD462AC2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gophers",
+						"01D3XZ89NFJZ9QT2DHVD462AC2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Gopher",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/gophers/01D3XZ89NFJZ9QT2DHVD462AC2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gophers",
+						"01D3XZ89NFJZ9QT2DHVD462AC2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

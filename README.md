@@ -33,6 +33,24 @@ Fetch a gopher by ID
 GET /gophers/{gopher_id}
 ```
 
+Add a gopher
+
+```
+POST /gophers
+```
+
+Modify a gopher
+```
+PUT /gophers/{gopher_id}
+```
+
+Remove a gopher
+```
+DELETE /gophers/{gopher_id}
+```
+
+You can import the Postman collection into `api/GopherApi.postman_collection`
+
 ## Contributing
 If you think that you can improve with new endpoints, and functionallities the API feel free to contribute with this project with fork this repo and send your Pull Request.
 
