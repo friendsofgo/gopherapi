@@ -6,14 +6,16 @@ import (
 
 	"github.com/friendsofgo/gopherapi/pkg/adding"
 	"github.com/friendsofgo/gopherapi/pkg/fetching"
+	"github.com/friendsofgo/gopherapi/pkg/modifying"
 
 	"github.com/gorilla/mux"
 )
 
 type api struct {
-	router   http.Handler
-	fetching fetching.Service
-	adding   adding.Service
+	router    http.Handler
+	fetching  fetching.Service
+	adding    adding.Service
+	modifying modifying.Service
 }
 
 // Server representation of gopher server
@@ -22,16 +24,18 @@ type Server interface {
 	FetchGophers(w http.ResponseWriter, r *http.Request)
 	FetchGopher(w http.ResponseWriter, r *http.Request)
 	AddGopher(w http.ResponseWriter, r *http.Request)
+	ModifyGopher(w http.ResponseWriter, r *http.Request)
 }
 
 // New initialize the server
-func New(fS fetching.Service, aS adding.Service) Server {
-	a := &api{fetching: fS, adding: aS}
+func New(fS fetching.Service, aS adding.Service, mS modifying.Service) Server {
+	a := &api{fetching: fS, adding: aS, modifying: mS}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/gophers", a.FetchGophers).Methods(http.MethodGet)
 	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.FetchGopher).Methods(http.MethodGet)
 	r.HandleFunc("/gophers", a.AddGopher).Methods(http.MethodPost)
+	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.ModifyGopher).Methods(http.MethodPut)
 
 	a.router = r
 	return a
@@ -77,6 +81,7 @@ func (a *api) AddGopher(w http.ResponseWriter, r *http.Request) {
 	var g addGopherRequest
 	err := decoder.Decode(&g)
 
+	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode("Error unmarshalling request body")
@@ -90,4 +95,33 @@ func (a *api) AddGopher(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+type modifyGopherRequest struct {
+	Name  string `json:"name"`
+	Image string `json:"image"`
+	Age   int    `json:"age"`
+}
+
+// ModifyGopher modify gopher data
+func (a *api) ModifyGopher(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+
+	var g addGopherRequest
+	err := decoder.Decode(&g)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode("Error unmarshalling request body")
+		return
+	}
+	vars := mux.Vars(r)
+	if err := a.modifying.ModifyGopher(vars["ID"], g.Name, g.Image, g.Age); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode("Can't modify a gopher")
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

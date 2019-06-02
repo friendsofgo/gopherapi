@@ -11,6 +11,7 @@ import (
 
 	"github.com/friendsofgo/gopherapi/pkg/adding"
 	"github.com/friendsofgo/gopherapi/pkg/fetching"
+	"github.com/friendsofgo/gopherapi/pkg/modifying"
 
 	sample "github.com/friendsofgo/gopherapi/cmd/sample-data"
 	gopher "github.com/friendsofgo/gopherapi/pkg"
@@ -140,5 +141,7 @@ func buildServer() Server {
 	repo := inmem.NewRepository(sample.Gophers)
 	fetching := fetching.NewService(repo)
 	adding := adding.NewService(repo)
-	return New(fetching, adding)
+	modifying := modifying.NewService(repo)
+
+	return New(fetching, adding, modifying)
 }
