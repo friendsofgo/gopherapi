@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// api all server necessary dependencies
 type api struct {
 	router    http.Handler
 	fetching  fetching.Service
@@ -43,6 +44,11 @@ func New(fS fetching.Service, aS adding.Service, mS modifying.Service, rS removi
 
 	a.router = r
 	return a
+}
+
+// NewWire empty initialization for using with wire
+func NewWire() Server {
+	return &api{}
 }
 
 func (a *api) Router() http.Handler {
