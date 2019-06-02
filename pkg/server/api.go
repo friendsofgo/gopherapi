@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"net/http"
 
-	gopher "github.com/friendsofgo/gopherapi/pkg"
+	"github.com/friendsofgo/gopherapi/pkg/adding"
+	"github.com/friendsofgo/gopherapi/pkg/fetching"
 
 	"github.com/gorilla/mux"
 )
 
 type api struct {
-	router     http.Handler
-	repository gopher.GopherRepository
+	router   http.Handler
+	fetching fetching.Service
+	adding   adding.Service
 }
 
 // Server representation of gopher server
@@ -19,15 +21,17 @@ type Server interface {
 	Router() http.Handler
 	FetchGophers(w http.ResponseWriter, r *http.Request)
 	FetchGopher(w http.ResponseWriter, r *http.Request)
+	AddGopher(w http.ResponseWriter, r *http.Request)
 }
 
 // New initialize the server
-func New(repo gopher.GopherRepository) Server {
-	a := &api{repository: repo}
+func New(fS fetching.Service, aS adding.Service) Server {
+	a := &api{fetching: fS, adding: aS}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/gophers", a.FetchGophers).Methods(http.MethodGet)
 	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.FetchGopher).Methods(http.MethodGet)
+	r.HandleFunc("/gophers", a.AddGopher).Methods(http.MethodPost)
 
 	a.router = r
 	return a
@@ -39,7 +43,7 @@ func (a *api) Router() http.Handler {
 
 // FetchGophers return a list of all gophers
 func (a *api) FetchGophers(w http.ResponseWriter, r *http.Request) {
-	gophers, _ := a.repository.FetchGophers()
+	gophers, _ := a.fetching.FetchGophers()
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(gophers)
@@ -48,7 +52,7 @@ func (a *api) FetchGophers(w http.ResponseWriter, r *http.Request) {
 // FetchGopher return a gopher by ID
 func (a *api) FetchGopher(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	gopher, err := a.repository.FetchGopherByID(vars["ID"])
+	gopher, err := a.fetching.FetchGopherByID(vars["ID"])
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound) // We use not found for simplicity
@@ -57,4 +61,33 @@ func (a *api) FetchGopher(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(gopher)
+}
+
+type addGopherRequest struct {
+	ID    string `json:"ID"`
+	Name  string `json:"name"`
+	Image string `json:"image"`
+	Age   int    `json:"age"`
+}
+
+// AddGopher save a gopher
+func (a *api) AddGopher(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+
+	var g addGopherRequest
+	err := decoder.Decode(&g)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode("Error unmarshalling request body")
+		return
+	}
+
+	if err := a.adding.AddGopher(g.ID, g.Name, g.Image, g.Age); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode("Can't create a gopher")
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }

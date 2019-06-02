@@ -9,12 +9,13 @@ import (
 
 type gopherRepository struct {
 	mtx     sync.RWMutex
-	gophers map[string]*gopher.Gopher
+	gophers map[string]gopher.Gopher
 }
 
-func NewGopherRepository(gophers map[string]*gopher.Gopher) gopher.GopherRepository {
+// NewRepository creates a inmem repository with the necessary dependencies
+func NewRepository(gophers map[string]gopher.Gopher) gopher.Repository {
 	if gophers == nil {
-		gophers = make(map[string]*gopher.Gopher)
+		gophers = make(map[string]gopher.Gopher)
 	}
 
 	return &gopherRepository{
@@ -28,14 +29,14 @@ func (r *gopherRepository) CreateGopher(g *gopher.Gopher) error {
 	if err := r.checkIfExists(g.ID); err != nil {
 		return err
 	}
-	r.gophers[g.ID] = g
+	r.gophers[g.ID] = *g
 	return nil
 }
 
-func (r *gopherRepository) FetchGophers() ([]*gopher.Gopher, error) {
+func (r *gopherRepository) FetchGophers() ([]gopher.Gopher, error) {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
-	values := make([]*gopher.Gopher, 0, len(r.gophers))
+	values := make([]gopher.Gopher, 0, len(r.gophers))
 	for _, value := range r.gophers {
 		values = append(values, value)
 	}
@@ -50,7 +51,7 @@ func (r *gopherRepository) DeleteGopher(ID string) error {
 	return nil
 }
 
-func (r *gopherRepository) UpdateGopher(ID string, g *gopher.Gopher) error {
+func (r *gopherRepository) UpdateGopher(ID string, g gopher.Gopher) error {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
 	r.gophers[ID] = g
@@ -63,7 +64,7 @@ func (r *gopherRepository) FetchGopherByID(ID string) (*gopher.Gopher, error) {
 
 	for _, v := range r.gophers {
 		if v.ID == ID {
-			return v, nil
+			return &v, nil
 		}
 	}
 
