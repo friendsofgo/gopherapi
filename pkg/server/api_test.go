@@ -9,6 +9,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/friendsofgo/gopherapi/pkg/removing"
+
 	"github.com/friendsofgo/gopherapi/pkg/adding"
 	"github.com/friendsofgo/gopherapi/pkg/fetching"
 	"github.com/friendsofgo/gopherapi/pkg/modifying"
@@ -128,6 +130,50 @@ func TestAddGopher(t *testing.T) {
 	}
 }
 
+func TestModifyGopher(t *testing.T) {
+	bodyJSON := []byte(`{
+        "name": "Eustaqio",
+        "image": "https://storage.googleapis.com/gopherizeme.appspot.com/gophers/f73f25d73c06cc81c482821391a85c4b7dd34ba5.png",
+        "age": 99
+    }`)
+	req, err := http.NewRequest("PUT", "/gophers/01D3XZ89NFJZ9QT2DHVD462AC2", bytes.NewBuffer(bodyJSON))
+	if err != nil {
+		t.Fatalf("could not created request: %v", err)
+	}
+	s := buildServer()
+	rec := httptest.NewRecorder()
+
+	s.ModifyGopher(rec, req)
+	res := rec.Result()
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusNoContent {
+		t.Errorf("expected %d, got: %d", http.StatusNoContent, res.StatusCode)
+	}
+}
+
+func TestRemoveGopher(t *testing.T) {
+
+	uri := fmt.Sprintf("/gophers/%s", "01D3XZ89NFJZ9QT2DHVD462AC2")
+	req, err := http.NewRequest("DELETE", uri, nil)
+	if err != nil {
+		t.Fatalf("could not created request: %v", err)
+	}
+
+	s := buildServer()
+
+	rec := httptest.NewRecorder()
+	s.Router().ServeHTTP(rec, req)
+
+	res := rec.Result()
+
+	defer res.Body.Close()
+	if http.StatusNoContent != res.StatusCode {
+		t.Errorf("expected %d, got: %d", http.StatusNoContent, res.StatusCode)
+	}
+
+}
+
 func gopherSample() *gopher.Gopher {
 	return &gopher.Gopher{
 		ID:    "01D3XZ3ZHCP3KG9VT4FGAD8KDR",
@@ -142,6 +188,7 @@ func buildServer() Server {
 	fetching := fetching.NewService(repo)
 	adding := adding.NewService(repo)
 	modifying := modifying.NewService(repo)
+	removing := removing.NewService(repo)
 
-	return New(fetching, adding, modifying)
+	return New(fetching, adding, modifying, removing)
 }

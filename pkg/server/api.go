@@ -7,6 +7,7 @@ import (
 	"github.com/friendsofgo/gopherapi/pkg/adding"
 	"github.com/friendsofgo/gopherapi/pkg/fetching"
 	"github.com/friendsofgo/gopherapi/pkg/modifying"
+	"github.com/friendsofgo/gopherapi/pkg/removing"
 
 	"github.com/gorilla/mux"
 )
@@ -16,6 +17,7 @@ type api struct {
 	fetching  fetching.Service
 	adding    adding.Service
 	modifying modifying.Service
+	removing  removing.Service
 }
 
 // Server representation of gopher server
@@ -25,17 +27,19 @@ type Server interface {
 	FetchGopher(w http.ResponseWriter, r *http.Request)
 	AddGopher(w http.ResponseWriter, r *http.Request)
 	ModifyGopher(w http.ResponseWriter, r *http.Request)
+	RemoveGopher(w http.ResponseWriter, r *http.Request)
 }
 
 // New initialize the server
-func New(fS fetching.Service, aS adding.Service, mS modifying.Service) Server {
-	a := &api{fetching: fS, adding: aS, modifying: mS}
+func New(fS fetching.Service, aS adding.Service, mS modifying.Service, rS removing.Service) Server {
+	a := &api{fetching: fS, adding: aS, modifying: mS, removing: rS}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/gophers", a.FetchGophers).Methods(http.MethodGet)
 	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.FetchGopher).Methods(http.MethodGet)
 	r.HandleFunc("/gophers", a.AddGopher).Methods(http.MethodPost)
 	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.ModifyGopher).Methods(http.MethodPut)
+	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", a.RemoveGopher).Methods(http.MethodDelete)
 
 	a.router = r
 	return a
@@ -123,5 +127,13 @@ func (a *api) ModifyGopher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// RemoveGopher remove a gopher
+func (a *api) RemoveGopher(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	a.removing.RemoveGopher(vars["ID"])
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNoContent)
 }

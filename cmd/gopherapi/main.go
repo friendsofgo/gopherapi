@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/friendsofgo/gopherapi/pkg/removing"
+
 	"github.com/friendsofgo/gopherapi/pkg/modifying"
 
 	"github.com/friendsofgo/gopherapi/pkg/adding"
@@ -32,8 +34,9 @@ func main() {
 	fS := fetching.NewService(repo)
 	aS := adding.NewService(repo)
 	mS := modifying.NewService(repo)
+	rS := removing.NewService(repo)
 
-	s := server.New(fS, aS, mS)
+	s := server.New(fS, aS, mS, rS)
 
 	fmt.Println("The gopher server is on tap now: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", s.Router()))
