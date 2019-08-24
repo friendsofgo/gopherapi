@@ -1,11 +1,15 @@
 package fetching
 
-import gopher "github.com/friendsofgo/gopherapi/pkg"
+import (
+	"context"
+
+	gopher "github.com/friendsofgo/gopherapi/pkg"
+)
 
 // Service provides fetching operations.
 type Service interface {
-	FetchGophers() ([]gopher.Gopher, error)
-	FetchGopherByID(ID string) (*gopher.Gopher, error)
+	FetchGophers(ctx context.Context) ([]gopher.Gopher, error)
+	FetchGopherByID(ctx context.Context, ID string) (*gopher.Gopher, error)
 }
 
 type service struct {
@@ -18,11 +22,11 @@ func NewService(repository gopher.Repository) Service {
 }
 
 // FetchGophers returns all gophers
-func (s *service) FetchGophers() ([]gopher.Gopher, error) {
-	return s.repository.FetchGophers()
+func (s *service) FetchGophers(ctx context.Context) ([]gopher.Gopher, error) {
+	return s.repository.FetchGophers(ctx)
 }
 
 // FetchGopherByID returns a gopher
-func (s *service) FetchGopherByID(ID string) (*gopher.Gopher, error) {
-	return s.repository.FetchGopherByID(ID)
+func (s *service) FetchGopherByID(ctx context.Context, ID string) (*gopher.Gopher, error) {
+	return s.repository.FetchGopherByID(ctx, ID)
 }

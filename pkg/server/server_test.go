@@ -185,10 +185,10 @@ func gopherSample() *gopher.Gopher {
 
 func buildServer() Server {
 	repo := inmem.NewRepository(sample.Gophers)
-	fetching := fetching.NewService(repo)
-	adding := adding.NewService(repo)
-	modifying := modifying.NewService(repo)
-	removing := removing.NewService(repo)
+	fS := fetching.NewService(repo)
+	aS := adding.NewService(repo)
+	mS := modifying.NewService(repo)
+	rS := removing.NewService(repo)
 
-	return New(fetching, adding, modifying, removing)
+	return New("test", "http://test", fS, aS, mS, rS)
 }

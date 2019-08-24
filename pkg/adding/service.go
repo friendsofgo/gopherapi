@@ -1,12 +1,14 @@
 package adding
 
 import (
+	"context"
+
 	gopher "github.com/friendsofgo/gopherapi/pkg"
 )
 
 // Service provides adding operations.
 type Service interface {
-	AddGopher(ID, name, image string, age int) error
+	AddGopher(ctx context.Context, ID, name, image string, age int) error
 }
 
 type service struct {
@@ -19,7 +21,7 @@ func NewService(repository gopher.Repository) Service {
 }
 
 // AddGopher adds the given gopher to storage
-func (s *service) AddGopher(ID, name, image string, age int) error {
+func (s *service) AddGopher(ctx context.Context, ID, name, image string, age int) error {
 	g := gopher.New(ID, name, image, age)
-	return s.repository.CreateGopher(g)
+	return s.repository.CreateGopher(ctx, g)
 }

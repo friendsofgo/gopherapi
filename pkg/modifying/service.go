@@ -1,12 +1,14 @@
 package modifying
 
 import (
+	"context"
+
 	gopher "github.com/friendsofgo/gopherapi/pkg"
 )
 
 // Service provides modifying operations.
 type Service interface {
-	ModifyGopher(ID, name, image string, age int) error
+	ModifyGopher(ctx context.Context, ID, name, image string, age int) error
 }
 
 type service struct {
@@ -19,7 +21,7 @@ func NewService(repository gopher.Repository) Service {
 }
 
 // ModifyGopher modify a gopher data
-func (s *service) ModifyGopher(ID, name, image string, age int) error {
+func (s *service) ModifyGopher(ctx context.Context, ID, name, image string, age int) error {
 	g := gopher.New(ID, name, image, age)
-	return s.repository.UpdateGopher(ID, *g)
+	return s.repository.UpdateGopher(ctx, ID, *g)
 }

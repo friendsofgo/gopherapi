@@ -1,12 +1,14 @@
 package removing
 
 import (
+	"context"
+
 	gopher "github.com/friendsofgo/gopherapi/pkg"
 )
 
 // Service provides removing operations.
 type Service interface {
-	RemoveGopher(ID string) error
+	RemoveGopher(ctx context.Context, ID string) error
 }
 
 type service struct {
@@ -19,6 +21,6 @@ func NewService(repository gopher.Repository) Service {
 }
 
 // RemoveGopher remove gopher from the storage
-func (s *service) RemoveGopher(ID string) error {
-	return s.repository.DeleteGopher(ID)
+func (s *service) RemoveGopher(ctx context.Context, ID string) error {
+	return s.repository.DeleteGopher(ctx, ID)
 }
