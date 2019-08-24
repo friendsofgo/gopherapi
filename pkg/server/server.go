@@ -93,10 +93,10 @@ func (s *server) FetchGopher(w http.ResponseWriter, r *http.Request) {
 	ctx := s.createContext(r.Context())
 
 	vars := mux.Vars(r)
-	gopher, err := s.fetching.FetchGopherByID(ctx, vars["ID"])
+	gopher := s.fetching.FetchGopherByID(ctx, vars["ID"])
 	w.Header().Set("Content-Type", "application/json")
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound) // We use not found for simplicity
+	if gopher == nil {
+		w.WriteHeader(http.StatusNotFound)
 		_ = json.NewEncoder(w).Encode("Gopher Not found")
 		return
 	}

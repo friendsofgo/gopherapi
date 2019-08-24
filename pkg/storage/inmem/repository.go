@@ -69,7 +69,7 @@ func (r *gopherRepository) FetchGopherByID(ctx context.Context, ID string) (*gop
 		}
 	}
 
-	return nil, fmt.Errorf("The ID %s doesn't exist", ID)
+	return nil, fmt.Errorf("Error has ocurred while finding gopher %s", ID)
 }
 
 func (r *gopherRepository) checkIfExists(ctx context.Context, ID string) error {
