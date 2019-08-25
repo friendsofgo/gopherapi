@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
@@ -15,8 +14,8 @@ import (
 
 // server all server necessary dependencies
 type server struct {
-	serverName string
-	httpAddr   string
+	serverID string
+	httpAddr string
 
 	router    http.Handler
 	fetching  fetching.Service
@@ -37,33 +36,27 @@ type Server interface {
 
 // New initialize the server
 func New(
-	serverName string,
-	httpAddr string,
+	serverID string,
 	fS fetching.Service,
 	aS adding.Service,
 	mS modifying.Service,
 	rS removing.Service) Server {
 	a := &server{
-		serverName: serverName,
-		httpAddr:   httpAddr,
-		fetching:   fS,
-		adding:     aS,
-		modifying:  mS,
-		removing:   rS}
+		serverID:  serverID,
+		fetching:  fS,
+		adding:    aS,
+		modifying: mS,
+		removing:  rS}
 	router(a)
 
 	return a
 }
 
-func (s *server) createContext(ctx context.Context) context.Context {
-	ctx = context.WithValue(ctx, contextKeyServerName, s.serverName)
-	ctx = context.WithValue(ctx, contextKeyHttpAddr, s.httpAddr)
-
-	return ctx
-}
-
 func router(s *server) {
 	r := mux.NewRouter()
+
+	r.Use(newServerMiddleware(s.serverID))
+
 	r.HandleFunc("/gophers", s.FetchGophers).Methods(http.MethodGet)
 	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", s.FetchGopher).Methods(http.MethodGet)
 	r.HandleFunc("/gophers", s.AddGopher).Methods(http.MethodPost)
@@ -79,9 +72,7 @@ func (s *server) Router() http.Handler {
 
 // FetchGophers return a list of all gophers
 func (s *server) FetchGophers(w http.ResponseWriter, r *http.Request) {
-	ctx := s.createContext(r.Context())
-
-	gophers, _ := s.fetching.FetchGophers(ctx)
+	gophers, _ := s.fetching.FetchGophers(r.Context())
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(gophers)
@@ -90,10 +81,8 @@ func (s *server) FetchGophers(w http.ResponseWriter, r *http.Request) {
 
 // FetchGopher return a gopher by ID
 func (s *server) FetchGopher(w http.ResponseWriter, r *http.Request) {
-	ctx := s.createContext(r.Context())
-
 	vars := mux.Vars(r)
-	gopher := s.fetching.FetchGopherByID(ctx, vars["ID"])
+	gopher := s.fetching.FetchGopherByID(r.Context(), vars["ID"])
 	w.Header().Set("Content-Type", "application/json")
 	if gopher == nil {
 		w.WriteHeader(http.StatusNotFound)
@@ -125,8 +114,7 @@ func (s *server) AddGopher(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode("Error unmarshalling request body")
 		return
 	}
-	ctx := s.createContext(r.Context())
-	if err := s.adding.AddGopher(ctx, g.ID, g.Name, g.Image, g.Age); err != nil {
+	if err := s.adding.AddGopher(r.Context(), g.ID, g.Name, g.Image, g.Age); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode("Can't create a gopher")
 		return
@@ -155,9 +143,7 @@ func (s *server) ModifyGopher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	vars := mux.Vars(r)
-	ctx := s.createContext(r.Context())
-
-	if err := s.modifying.ModifyGopher(ctx, vars["ID"], g.Name, g.Image, g.Age); err != nil {
+	if err := s.modifying.ModifyGopher(r.Context(), vars["ID"], g.Name, g.Image, g.Age); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode("Can't modify a gopher")
 		return
@@ -168,10 +154,9 @@ func (s *server) ModifyGopher(w http.ResponseWriter, r *http.Request) {
 
 // RemoveGopher remove a gopher
 func (s *server) RemoveGopher(w http.ResponseWriter, r *http.Request) {
-	ctx := s.createContext(r.Context())
 	vars := mux.Vars(r)
 
-	_ = s.removing.RemoveGopher(ctx, vars["ID"])
+	_ = s.removing.RemoveGopher(r.Context(), vars["ID"])
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNoContent)
 

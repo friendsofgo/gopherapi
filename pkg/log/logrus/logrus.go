@@ -36,12 +36,21 @@ func (l *logger) UnexpectedError(ctx context.Context, err error) {
 }
 
 func (l *logger) WithDefaultFields(ctx context.Context) *logrus.Entry {
-	hostname, _ := server.Name(ctx)
-	httpAddr, _ := server.HttpAddr(ctx)
+	serverID, _ := server.ID(ctx)
+	endpoint, _ := server.Endpoint(ctx)
+	clientIP, _ := server.ClientIP(ctx)
+	fields := logrus.Fields{
+		"serverid": serverID,
+		"endpoint": endpoint,
+		"clientip": clientIP,
+	}
 
-	return l.WithFields(logrus.Fields{
-		"hostname": hostname,
-		"httpAddr": httpAddr,
-	})
+	if xForwardedFor, ok := server.XForwardedFor(ctx); ok {
+		fields["xforwardedfor"] = xForwardedFor
+	}
+	if xForwardedProto, ok := server.XForwardedProto(ctx); ok {
+		fields["xforwardedproto"] = xForwardedProto
+	}
 
+	return l.WithFields(fields)
 }
