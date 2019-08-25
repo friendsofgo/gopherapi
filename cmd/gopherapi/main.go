@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -11,8 +12,7 @@ import (
 	gopher "github.com/friendsofgo/gopherapi/pkg"
 	"github.com/friendsofgo/gopherapi/pkg/adding"
 	"github.com/friendsofgo/gopherapi/pkg/fetching"
-	"github.com/friendsofgo/gopherapi/pkg/log"
-	"github.com/friendsofgo/gopherapi/pkg/log/hooks"
+	"github.com/friendsofgo/gopherapi/pkg/log/logrus"
 	"github.com/friendsofgo/gopherapi/pkg/modifying"
 	"github.com/friendsofgo/gopherapi/pkg/removing"
 	"github.com/friendsofgo/gopherapi/pkg/server"
@@ -41,7 +41,7 @@ func main() {
 		gophers = sample.Gophers
 	}
 
-	logger := log.NewLogger(hooks.NewServerInformationHook())
+	logger := logrus.NewLogger()
 
 	repo := inmem.NewRepository(gophers)
 	fetchingService := fetching.NewService(repo, logger)
@@ -61,5 +61,5 @@ func main() {
 	)
 
 	fmt.Println("The gopher server is on tap now:", httpAddr)
-	logger.Fatal(http.ListenAndServe(httpAddr, s.Router()))
+	log.Fatal(http.ListenAndServe(httpAddr, s.Router()))
 }

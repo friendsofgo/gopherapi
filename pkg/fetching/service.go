@@ -15,11 +15,11 @@ type Service interface {
 
 type service struct {
 	repository gopher.Repository
-	logger     *log.Logger
+	logger     log.Logger
 }
 
 // NewService creates a fetching service with the necessary dependencies
-func NewService(repository gopher.Repository, logger *log.Logger) Service {
+func NewService(repository gopher.Repository, logger log.Logger) Service {
 	return &service{repository, logger}
 }
 
