@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/friendsofgo/gopherapi/pkg/log"
 	"github.com/friendsofgo/gopherapi/pkg/removing"
 
 	"github.com/friendsofgo/gopherapi/pkg/adding"
@@ -185,10 +186,10 @@ func gopherSample() *gopher.Gopher {
 
 func buildServer() Server {
 	repo := inmem.NewRepository(sample.Gophers)
-	fetching := fetching.NewService(repo)
-	adding := adding.NewService(repo)
-	modifying := modifying.NewService(repo)
-	removing := removing.NewService(repo)
+	fS := fetching.NewService(repo, log.NewNoopLogger())
+	aS := adding.NewService(repo)
+	mS := modifying.NewService(repo)
+	rS := removing.NewService(repo)
 
-	return New(fetching, adding, modifying, removing)
+	return New("test", fS, aS, mS, rS)
 }

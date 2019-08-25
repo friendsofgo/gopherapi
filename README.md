@@ -8,7 +8,7 @@ The Gopher API, is a simple CRUD API for formative purpose, we're building it wh
 **Install**
 
 ```sh
-$ GO111MODULE=off go get -u github.com/friendsofgo/gopherapi/cmd/gopherapi
+$ go get -u github.com/friendsofgo/gopherapi/cmd/gopherapi
 ```
 
 **Usage**

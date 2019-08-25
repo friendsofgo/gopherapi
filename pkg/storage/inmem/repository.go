@@ -1,6 +1,7 @@
 package inmem
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
@@ -23,17 +24,17 @@ func NewRepository(gophers map[string]gopher.Gopher) gopher.Repository {
 	}
 }
 
-func (r *gopherRepository) CreateGopher(g *gopher.Gopher) error {
+func (r *gopherRepository) CreateGopher(ctx context.Context, g *gopher.Gopher) error {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
-	if err := r.checkIfExists(g.ID); err != nil {
+	if err := r.checkIfExists(ctx, g.ID); err != nil {
 		return err
 	}
 	r.gophers[g.ID] = *g
 	return nil
 }
 
-func (r *gopherRepository) FetchGophers() ([]gopher.Gopher, error) {
+func (r *gopherRepository) FetchGophers(ctx context.Context) ([]gopher.Gopher, error) {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
 	values := make([]gopher.Gopher, 0, len(r.gophers))
@@ -43,7 +44,7 @@ func (r *gopherRepository) FetchGophers() ([]gopher.Gopher, error) {
 	return values, nil
 }
 
-func (r *gopherRepository) DeleteGopher(ID string) error {
+func (r *gopherRepository) DeleteGopher(ctx context.Context, ID string) error {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
 	delete(r.gophers, ID)
@@ -51,14 +52,14 @@ func (r *gopherRepository) DeleteGopher(ID string) error {
 	return nil
 }
 
-func (r *gopherRepository) UpdateGopher(ID string, g gopher.Gopher) error {
+func (r *gopherRepository) UpdateGopher(ctx context.Context, ID string, g gopher.Gopher) error {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
 	r.gophers[ID] = g
 	return nil
 }
 
-func (r *gopherRepository) FetchGopherByID(ID string) (*gopher.Gopher, error) {
+func (r *gopherRepository) FetchGopherByID(ctx context.Context, ID string) (*gopher.Gopher, error) {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
 
@@ -68,10 +69,10 @@ func (r *gopherRepository) FetchGopherByID(ID string) (*gopher.Gopher, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("The ID %s doesn't exist", ID)
+	return nil, fmt.Errorf("Error has ocurred while finding gopher %s", ID)
 }
 
-func (r *gopherRepository) checkIfExists(ID string) error {
+func (r *gopherRepository) checkIfExists(ctx context.Context, ID string) error {
 	for _, v := range r.gophers {
 		if v.ID == ID {
 			return fmt.Errorf("The gopher %s is already exist", ID)

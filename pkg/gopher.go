@@ -1,5 +1,9 @@
 package gopher
 
+import (
+	"context"
+)
+
 // Gopher defines the properties of a gopher to be listed
 type Gopher struct {
 	ID    string `json:"ID"`
@@ -21,13 +25,13 @@ func New(ID, name, image string, age int) *Gopher {
 //Repository provides access to the gopher storage
 type Repository interface {
 	// CreateGopher saves a given gopher
-	CreateGopher(g *Gopher) error
+	CreateGopher(ctx context.Context, g *Gopher) error
 	// FetchGophers return all gophers saved in storage
-	FetchGophers() ([]Gopher, error)
+	FetchGophers(ctx context.Context) ([]Gopher, error)
 	// DeleteGopher remove gopher with given ID
-	DeleteGopher(ID string) error
+	DeleteGopher(ctx context.Context, ID string) error
 	// UpdateGopher modify gopher with given ID and given new data
-	UpdateGopher(ID string, g Gopher) error
+	UpdateGopher(ctx context.Context, ID string, g Gopher) error
 	// FetchGopherByID returns the gopher with given ID
-	FetchGopherByID(ID string) (*Gopher, error)
+	FetchGopherByID(ctx context.Context, ID string) (*Gopher, error)
 }
