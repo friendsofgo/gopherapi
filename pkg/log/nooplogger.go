@@ -5,6 +5,7 @@ import "context"
 type noop struct {
 }
 
+// NewNoopLogger ...
 func NewNoopLogger() Logger {
 	return &noop{}
 }
