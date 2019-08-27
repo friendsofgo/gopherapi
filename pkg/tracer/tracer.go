@@ -9,7 +9,7 @@ import (
 )
 
 // NewTracer creates a new tracer with the necessary dependencies
-func NewTracer(serviceName string, reporterURL string) (*zipkin.Tracer, error) {
+func NewTracer(serviceName, reporterURL string) (*zipkin.Tracer, error) {
 
 	reporter := http.NewReporter(fmt.Sprintf("%s/api/v2/spans", reporterURL))
 
