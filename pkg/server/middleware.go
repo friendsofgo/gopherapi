@@ -2,8 +2,12 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/openzipkin/zipkin-go"
 )
 
 type handler struct {
@@ -47,6 +51,18 @@ func (h handler) createRequestContext(req *http.Request) context.Context {
 	ctx = context.WithValue(ctx, contextKeyEndpoint, req.URL.RequestURI())
 
 	ctx = context.WithValue(ctx, contextKeyServerID, h.serverID)
-
+	zipkinSpanHttpName(ctx, req)
 	return ctx
+}
+
+func zipkinSpanHttpName(ctx context.Context, req *http.Request) {
+	if span := zipkin.SpanFromContext(ctx); span != nil {
+		if currentRoute := mux.CurrentRoute(req); currentRoute != nil {
+			if routePath, err := currentRoute.GetPathTemplate(); err == nil {
+				zipkin.TagHTTPRoute.Set(span, routePath)
+				span.SetName(fmt.Sprintf("%s %s", req.Method, routePath))
+
+			}
+		}
+	}
 }

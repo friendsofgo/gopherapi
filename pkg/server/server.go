@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/openzipkin/zipkin-go"
+	zipkinhttp "github.com/openzipkin/zipkin-go/middleware/http"
+
 	"github.com/friendsofgo/gopherapi/pkg/adding"
 	"github.com/friendsofgo/gopherapi/pkg/fetching"
 	"github.com/friendsofgo/gopherapi/pkg/modifying"
@@ -15,9 +18,11 @@ import (
 // server all server necessary dependencies
 type server struct {
 	serverID string
-	httpAddr string
 
-	router    http.Handler
+	tracer *zipkin.Tracer
+
+	router http.Handler
+
 	fetching  fetching.Service
 	adding    adding.Service
 	modifying modifying.Service
@@ -37,12 +42,15 @@ type Server interface {
 // New initialize the server
 func New(
 	serverID string,
+	tracer *zipkin.Tracer,
 	fS fetching.Service,
 	aS adding.Service,
 	mS modifying.Service,
-	rS removing.Service) Server {
+	rS removing.Service,
+) Server {
 	a := &server{
 		serverID:  serverID,
+		tracer:    tracer,
 		fetching:  fS,
 		adding:    aS,
 		modifying: mS,
@@ -55,7 +63,10 @@ func New(
 func router(s *server) {
 	r := mux.NewRouter()
 
-	r.Use(newServerMiddleware(s.serverID))
+	r.Use(
+		zipkinhttp.NewServerMiddleware(s.tracer),
+		newServerMiddleware(s.serverID),
+	)
 
 	r.HandleFunc("/gophers", s.FetchGophers).Methods(http.MethodGet)
 	r.HandleFunc("/gophers/{ID:[a-zA-Z0-9_]+}", s.FetchGopher).Methods(http.MethodGet)

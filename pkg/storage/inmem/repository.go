@@ -4,23 +4,29 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
+
+	"github.com/openzipkin/zipkin-go"
 
 	gopher "github.com/friendsofgo/gopherapi/pkg"
 )
 
 type gopherRepository struct {
-	mtx     sync.RWMutex
+	mtx    sync.RWMutex
+	tracer *zipkin.Tracer
+
 	gophers map[string]gopher.Gopher
 }
 
 // NewRepository creates a inmem repository with the necessary dependencies
-func NewRepository(gophers map[string]gopher.Gopher) gopher.Repository {
+func NewRepository(gophers map[string]gopher.Gopher, tracer *zipkin.Tracer) gopher.Repository {
 	if gophers == nil {
 		gophers = make(map[string]gopher.Gopher)
 	}
 
 	return &gopherRepository{
 		gophers: gophers,
+		tracer:  tracer,
 	}
 }
 
@@ -60,6 +66,15 @@ func (r *gopherRepository) UpdateGopher(ctx context.Context, ID string, g gopher
 }
 
 func (r *gopherRepository) FetchGopherByID(ctx context.Context, ID string) (*gopher.Gopher, error) {
+	span, _ := r.tracer.StartSpanFromContext(ctx, "FetchGopherByID")
+	span.Tag("Repository", "in memory")
+	span.Annotate(time.Now(), "Transaction Start")
+
+	defer func() {
+		span.Annotate(time.Now(), "Transaction End")
+		span.Finish()
+	}()
+
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
 

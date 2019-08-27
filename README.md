@@ -1,7 +1,17 @@
 [![CircleCI](https://circleci.com/gh/friendsofgo/gopherapi/tree/master.svg?style=svg)](https://circleci.com/gh/friendsofgo/gopherapi/tree/master)
 
 # Gopher API
-The Gopher API, is a simple CRUD API for formative purpose, we're building it while writing the posts of the [blog](https://blog.friendsofgo.tech).
+The Gopher API, is a evolutive simple CRUD API for formative purpose, we're building it while writing the posts of the [blog](https://blog.friendsofgo.tech).
+
+In this API we've learnt differents, features and patterns in Go:
+
+* Using Gorilla Mux to create an simple API
+* Using a SOLID, Hexagonal Architecture
+* Testing HTTP handlers
+* Integration with CircleCI
+* Using Wire to build dependencies [only in v0.3.1](https://github.com/friendsofgo/gopherapi/releases/tag/v0.3.1)
+* Using pattern contextkey
+* Using instrumenting with Zipkin
 
 ## How can I use it?
 
