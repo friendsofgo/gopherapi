@@ -33,3 +33,9 @@ func NewTracer(serviceName string, reporterURL string) (*zipkin.Tracer, error) {
 	}
 	return t, nil
 }
+
+// NewNoopTracer creates a new no operational tracer with the necessary dependencies
+func NewNoopTracer() *zipkin.Tracer {
+	noopTracer, _ := zipkin.NewTracer(nil)
+	return noopTracer
+}

@@ -11,6 +11,7 @@ import (
 
 	"github.com/friendsofgo/gopherapi/pkg/log"
 	"github.com/friendsofgo/gopherapi/pkg/removing"
+	"github.com/friendsofgo/gopherapi/pkg/tracer"
 
 	"github.com/friendsofgo/gopherapi/pkg/adding"
 	"github.com/friendsofgo/gopherapi/pkg/fetching"
@@ -185,11 +186,13 @@ func gopherSample() *gopher.Gopher {
 }
 
 func buildServer() Server {
-	repo := inmem.NewRepository(sample.Gophers)
+
+	noopTracer := tracer.NewNoopTracer()
+	repo := inmem.NewRepository(sample.Gophers, tracer.NewNoopTracer())
 	fS := fetching.NewService(repo, log.NewNoopLogger())
 	aS := adding.NewService(repo)
 	mS := modifying.NewService(repo)
 	rS := removing.NewService(repo)
 
-	return New("test", fS, aS, mS, rS)
+	return New("test", noopTracer, fS, aS, mS, rS)
 }
