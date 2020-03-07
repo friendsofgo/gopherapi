@@ -29,6 +29,11 @@ $ gopherapi --withData
 The gopher server is on tap now: http://localhost:8080
 ```
 
+If you want to start the server using zipkin you will need to use the next option
+```sh
+$ gopherapi --withTrace
+```
+
 ## Endpoints
 
 Fetch all gophers
@@ -60,6 +65,12 @@ DELETE /gophers/{gopher_id}
 ```
 
 You can import the Postman collection into `api/GopherApi.postman_collection`
+
+## Launch Zipkin
+
+```
+docker run -d -p 9411:9411 openzipkin/zipkin
+```
 
 ## Contributing
 If you think that you can improve with new endpoints, and functionallities the API feel free to contribute with this project with fork this repo and send your Pull Request.

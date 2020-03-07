@@ -18,7 +18,6 @@ import (
 	"github.com/friendsofgo/gopherapi/pkg/server"
 	"github.com/friendsofgo/gopherapi/pkg/storage/inmem"
 	"github.com/friendsofgo/gopherapi/pkg/tracer"
-
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -37,6 +36,7 @@ func main() {
 	port := flag.Int("port", defaultPort, "define port of the server")
 	serverID := flag.String("server-id", defaultServerID, "define server identifier")
 	withData := flag.Bool("withData", false, "initialize the api with some gophers")
+	withTrace := flag.Bool("withTrace", false, "initialize the api with tracing")
 	flag.Parse()
 
 	var gophers map[string]gopher.Gopher
@@ -45,9 +45,13 @@ func main() {
 	}
 
 	logger := logrus.NewLogger()
-	trc, err := tracer.NewTracer(*serverID, zipkinURL)
-	if err != nil {
-		log.Fatal(err)
+	trc := tracer.NewNoopTracer()
+	if *withTrace {
+		var err error
+		trc, err = tracer.NewTracer(*serverID, zipkinURL)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	repo := inmem.NewRepository(gophers, trc)
