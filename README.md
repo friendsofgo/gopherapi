@@ -29,9 +29,15 @@ $ gopherapi --withData
 The gopher server is on tap now: http://localhost:8080
 ```
 
-If you want to start the server using zipkin you will need to use the next option
+If you want to start the server using zipkin you will need use the next option
 ```sh
 $ gopherapi --withTrace
+```
+
+If you want start the server using cockroachdb you will need use the next option
+
+```sh
+$gopherapi --cockroach
 ```
 
 ## Endpoints

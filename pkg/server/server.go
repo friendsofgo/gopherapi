@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/openzipkin/zipkin-go"
@@ -126,6 +127,7 @@ func (s *server) AddGopher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := s.adding.AddGopher(r.Context(), g.ID, g.Name, g.Image, g.Age); err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode("Can't create a gopher")
 		return
