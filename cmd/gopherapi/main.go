@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/friendsofgo/gopherapi/pkg/storage/mysql"
 	"log"
 	"net/http"
 	"os"
@@ -30,6 +31,7 @@ func main() {
 		defaultServerID = fmt.Sprintf("%s-%s", os.Getenv("GOPHERAPI_NAME"), hostName)
 		defaultHost     = os.Getenv("GOPHERAPI_SERVER_HOST")
 		defaultPort, _  = strconv.Atoi(os.Getenv("GOPHERAPI_SERVER_PORT"))
+		defaultDatabase = os.Getenv("GOPHERAPI_SERVER_PORT")
 
 		zipkinURL = os.Getenv("ZIPKIN_ENDPOINT")
 	)
@@ -39,7 +41,7 @@ func main() {
 	serverID := flag.String("server-id", defaultServerID, "define server identifier")
 	withData := flag.Bool("withData", false, "initialize the api with some gophers")
 	withTrace := flag.Bool("withTrace", false, "initialize the api with tracing")
-	cockroachDB := flag.Bool("cockroach", false, "initialize the api using CrockoachDB as db engine")
+	database := flag.String("database", defaultDatabase, "initialize the api using the given db engine")
 	flag.Parse()
 
 	var gophers map[string]gopher.Gopher
@@ -57,10 +59,8 @@ func main() {
 		}
 	}
 
-	repo := inmem.NewRepository(gophers, trc)
-	if *cockroachDB {
-		repo = newCockroachRepository(trc)
-	}
+	repo := initializeRepo(database, trc, gophers)
+
 	fetchingService := fetching.NewService(repo, logger)
 	addingService := adding.NewService(repo)
 	modifyingService := modifying.NewService(repo)
@@ -81,6 +81,19 @@ func main() {
 	log.Fatal(http.ListenAndServe(httpAddr, s.Router()))
 }
 
+func initializeRepo(database *string, trc *zipkin.Tracer, gophers map[string]gopher.Gopher) gopher.Repository {
+	var repo gopher.Repository
+	switch *database {
+	case "cockroach":
+		repo = newCockroachRepository(trc)
+	case "mysql":
+		repo = newMySQLRepository()
+	default:
+		repo = inmem.NewRepository(gophers, trc)
+	}
+	return repo
+}
+
 func newCockroachRepository(trc *zipkin.Tracer) gopher.Repository {
 	cockroachAddr := os.Getenv("COCKROACH_ADDR")
 	cockroachDBName := os.Getenv("COCKROACH_DB")
@@ -90,4 +103,15 @@ func newCockroachRepository(trc *zipkin.Tracer) gopher.Repository {
 		log.Fatal(err)
 	}
 	return cockroach.NewRepository(cockroachConn, trc)
+}
+
+func newMySQLRepository() gopher.Repository {
+	mysqlAddr := os.Getenv("MYSQL_ADDR")
+	mysqlDBName := os.Getenv("MYSQL_DB")
+
+	mysqlConn, err := mysql.NewConn(mysqlAddr, mysqlDBName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return mysql.NewRepository("gophers", mysqlConn)
 }
