@@ -77,7 +77,7 @@ func (r gopherRepository) FetchGophers(ctx context.Context) ([]gopherapi.Gopher,
 func (r gopherRepository) DeleteGopher(ctx context.Context, ID string) error {
 	deleteBuilder := sqlbuilder.NewStruct(new(sqlGopher)).DeleteFrom(r.table)
 	query, args := deleteBuilder.Where(
-		deleteBuilder.LessThan("id", ID),
+		deleteBuilder.Equal("id", ID),
 	).Build()
 
 	_, err := r.db.ExecContext(ctx, query, args...)
@@ -118,12 +118,12 @@ func (r gopherRepository) FetchGopherByID(ctx context.Context, ID string) (*goph
 	sqlGopherStruct := sqlbuilder.NewStruct(new(sqlGopher))
 
 	selectBuilder := sqlGopherStruct.SelectFrom(r.table)
-	query, args := selectBuilder.Build()
+
+	query, args := selectBuilder.Where(
+		selectBuilder.Equal("id", ID),
+	).Build()
 
 	row := r.db.QueryRowContext(ctx, query, args...)
-	if row == nil {
-		return nil, nil
-	}
 
 	sqlGopher := sqlGopher{}
 
