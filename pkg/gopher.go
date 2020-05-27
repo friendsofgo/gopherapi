@@ -28,13 +28,13 @@ func New(ID, name, image string, age int) *Gopher {
 //Repository provides access to the gopher storage
 type Repository interface {
 	// CreateGopher saves a given gopher
-	CreateGopher(ctx context.Context, g *Gopher) error
+	CreateGopher(ctx context.Context, gopher *Gopher) error
 	// FetchGophers return all gophers saved in storage
 	FetchGophers(ctx context.Context) ([]Gopher, error)
 	// DeleteGopher remove gopher with given ID
 	DeleteGopher(ctx context.Context, ID string) error
 	// UpdateGopher modify gopher with given ID and given new data
-	UpdateGopher(ctx context.Context, ID string, g Gopher) error
+	UpdateGopher(ctx context.Context, ID string, gopher Gopher) error
 	// FetchGopherByID returns the gopher with given ID
 	FetchGopherByID(ctx context.Context, ID string) (*Gopher, error)
 }
