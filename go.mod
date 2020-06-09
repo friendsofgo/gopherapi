@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.3.0
 	github.com/openzipkin/zipkin-go v0.2.0
-	github.com/rafaeljusto/redigomock v2.3.0+incompatible
+	github.com/rafaeljusto/redigomock v2.4.0+incompatible
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.2.2
 )
