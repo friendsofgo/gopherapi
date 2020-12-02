@@ -7,7 +7,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/huandu/go-sqlbuilder v1.8.0
 	github.com/joho/godotenv v1.3.0
-	github.com/lib/pq v1.8.0
+	github.com/lib/pq v1.9.0
 	github.com/openzipkin/zipkin-go v0.2.3
 	github.com/rafaeljusto/redigomock v2.4.0+incompatible
 	github.com/sirupsen/logrus v1.6.0
