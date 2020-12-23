@@ -56,6 +56,7 @@ github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpO
 github.com/huandu/go-sqlbuilder v1.8.0 h1:1KP21dzROt03II0aoX/rD2Y6TX1VCIixSX5mvkxKGPk=
 github.com/huandu/go-sqlbuilder v1.8.0/go.mod h1:cM38aLPrMXaGxsUkHFh1e2skthPnQRPK7h8//X5LQMc=
 github.com/huandu/go-sqlbuilder v1.9.0/go.mod h1:cM38aLPrMXaGxsUkHFh1e2skthPnQRPK7h8//X5LQMc=
+github.com/huandu/go-sqlbuilder v1.9.2/go.mod h1:cM38aLPrMXaGxsUkHFh1e2skthPnQRPK7h8//X5LQMc=
 github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/konsorten/go-windows-terminal-sequences v1.0.3 h1:CE8S1cTafDpPvMhIxNJKvHsGVBgn1xWYf1NbHQhywc8=
