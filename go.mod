@@ -11,7 +11,7 @@ require (
 	github.com/openzipkin/zipkin-go v0.2.5
 	github.com/rafaeljusto/redigomock v2.4.0+incompatible
 	github.com/sirupsen/logrus v1.7.0
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 )
 
 go 1.15
