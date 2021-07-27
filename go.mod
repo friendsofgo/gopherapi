@@ -5,7 +5,7 @@ require (
 	github.com/alicebob/miniredis/v2 v2.15.1
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/mux v1.8.0
-	github.com/huandu/go-sqlbuilder v1.12.1
+	github.com/huandu/go-sqlbuilder v1.12.2
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.10.2
 	github.com/openzipkin/zipkin-go v0.2.5
