@@ -1,0 +1,20 @@
+version: 2
+updates:
+- package-ecosystem: gomod
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: github.com/lib/pq
+    versions:
+    - 1.10.0
+  - dependency-name: github.com/huandu/go-sqlbuilder
+    versions:
+    - 1.12.0
+  - dependency-name: github.com/alicebob/miniredis/v2
+    versions:
+    - 2.14.3
+  - dependency-name: github.com/sirupsen/logrus
+    versions:
+    - 1.8.0
